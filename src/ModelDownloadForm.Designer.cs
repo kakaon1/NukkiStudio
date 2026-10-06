@@ -1,4 +1,4 @@
-namespace NukkiStudio.App
+﻿namespace NukkiStudio.App
 {
     partial class ModelDownloadForm
     {
@@ -89,7 +89,7 @@ namespace NukkiStudio.App
             lblIntro.Name = "lblIntro";
             lblIntro.Size = new Size(592, 46);
             lblIntro.TabIndex = 1;
-            lblIntro.Text = "받을 모델을 고른 뒤 [다운로드]를 누르세요. 데이터 요금(핫스팟 등)에 주의하세요.\r\n받은 모델은 프로그램 옆 models 폴더에 저장되며 다시 받을 필요가 없습니다.";
+            lblIntro.Text = "받을 모델을 고른 뒤 [다운로드]를 누르세요. 데이터 요금(핫스팟 등)에 주의하세요.\r\n받은 모델은 아래에 표시된 models 폴더에 저장되며 다시 받을 필요가 없습니다.";
             //
             // tblPackages
             //

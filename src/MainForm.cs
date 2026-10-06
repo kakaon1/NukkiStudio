@@ -130,7 +130,8 @@ public partial class MainForm : Form
 
     private void InitializePaths()
     {
-        _modelsDirectory = Path.Combine(AppContext.BaseDirectory, "models");
+        // exe 옆에 쓸 수 없으면(예: Program Files) 사용자 폴더에 모델을 받는다
+        _modelsDirectory = ModelLocation.Resolve();
     }
 
     private void InitializeEvents()

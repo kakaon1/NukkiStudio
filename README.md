@@ -23,6 +23,16 @@
 
 자세한 사용법과 단축키 전체는 [docs/사용설명서.md](docs/사용설명서.md) (프로그램에서 F1과 같은 내용)를 참고하세요.
 
+## 다운로드 및 설치
+
+1. [Releases](https://github.com/kakaon1/NukkiStudio/releases)에서 `NukkiStudio.exe`를 받습니다 (약 65MB, 설치 불필요 — .NET 런타임 포함).
+2. 바탕화면이나 다운로드 폴더 같은 일반 폴더에 두고 실행합니다.
+   - 처음 실행할 때 Windows가 **"Windows의 PC 보호"** 화면을 띄우면 **추가 정보 → 실행**을 누르세요 (코드 서명 인증서가 없는 무료 프로그램이라 나오는 안내입니다).
+3. 첫 실행 때 **AI 모델 다운로드** 창이 열립니다. 필요한 모델을 골라 [다운로드]를 누르면 exe 옆 `models` 폴더에 저장되고, 다음부터는 다시 받지 않습니다.
+   - 필수: MobileSAM (약 35MB) / 선택: D-FINE-N (13MB), MI-GAN (27MB), LaMa (88MB)
+   - 인터넷 연결이 필요합니다. 나중에 받으려면 **설정 → AI 모델 다운로드 / 관리**.
+4. Windows 10 / 11 (64비트)에서 동작합니다. GPU(DirectX 12)가 있으면 자동으로 사용하고, 없으면 CPU로 동작합니다.
+
 ## 기본 사용 순서
 
 1. 이미지 파일이나 폴더를 창에 **끌어다 놓기** (또는 가운데 안내 영역 클릭 / Ctrl+O)
@@ -46,40 +56,40 @@
 
 측정값 (개발 PC, RTX 4050 Laptop): 이미지 분석 0.05~0.25초, 클릭당 선택 0.05~0.1초, 객체 감지 약 0.05초(CPU), 객체 지우기 0.08~0.15초(GPU).
 
-## 빌드 및 실행
+## 빌드 (개발자용)
 
-1. Visual Studio 2026에서 `NukkiStudio.sln`을 엽니다.
-2. 구성을 **Release**로 선택하고 빌드합니다 (Debug 빌드는 사용하지 않습니다). 빌드가 끝나면 자동으로 게시됩니다.
-3. 결과물: `src\bin\Release\Publish\`
-   - `NukkiStudio.exe` — 단일 실행 파일 (약 65MB, .NET 런타임 포함, 별도 설치 불필요)
-   - `models\` — AI 모델 폴더 (exe와 함께 배포)
-4. `NukkiStudio.exe`를 실행하거나, 이미지 파일 / 폴더를 exe 위에 끌어다 놓아 바로 엽니다.
+1. Visual Studio 2026(.NET 10 SDK)에서 `NukkiStudio.sln`을 엽니다.
+2. 구성을 **Release**로 선택하고 빌드합니다. 빌드가 끝나면 자동으로 게시됩니다.
+3. 결과물: `src\bin\Release\Publish\NukkiStudio.exe` (단일 실행 파일, Self-Contained)
+   - 저장소의 `models\` 폴더에 모델이 있으면 함께 복사되고, 없으면 실행 후 프로그램에서 받습니다.
 
 ※ 실행 중인 프로그램이 있으면 게시 파일이 잠겨 빌드가 실패하므로 먼저 종료하세요.
 
-## 모델 준비
+## AI 모델
 
-ONNX 파일은 용량 때문에 git에서 제외됩니다. 프로그램을 실행하면 없는 모델을 **AI 모델 다운로드** 창에서 받을 수 있습니다 (설정 → AI 모델 다운로드 / 관리). 받는 주소:
+모델 파일(.onnx)은 용량 때문에 저장소와 배포 파일에 포함하지 않습니다. 프로그램의 **AI 모델 다운로드** 창이 아래 원래 출처에서 받아 exe 옆 `models` 폴더에 저장합니다.
 
 | 폴더 | 파일 | 출처 |
 |------|------|------|
-| `models\lama\` | `inpainting_lama_2025jan.onnx` (88.3MB) | https://huggingface.co/opencv/inpainting_lama |
 | `models\mobile_sam\` | `mobile_sam_20230629.zip` (35MB) 압축 해제 | https://huggingface.co/nrl-ai/anylearning-labeling-models |
 | `models\dfine\` | `dfine_n_coco_956d170.zip` (13.3MB)의 `dfine_n_coco.onnx`, `LICENSE` | 같은 저장소 |
 | `models\migan\` | `migan-512-generator.onnx` (26.8MB) | https://huggingface.co/FreeHugsForRobots/ps-inpaint-migan |
+| `models\lama\` | `inpainting_lama_2025jan.onnx` (88.3MB) | https://huggingface.co/opencv/inpainting_lama |
 
-`models\mobile_sam`만 있어도 수동 선택 / 누끼 / 배경 지우기는 동작합니다. `dfine`이 없으면 객체 자동 선택, `migan`이 없으면 AI 지우기 대신 기본 채우기가 쓰입니다.
+`models\mobile_sam`만 있어도 수동 선택 / 누끼 / 배경 지우기는 동작합니다. `dfine`이 없으면 객체 자동 선택, 지우기 모델이 없으면 기본 채우기가 쓰입니다.
 
 ## 폴더 구조
 
 ```
-Nukki_Studio/
+NukkiStudio/
 ├─ README.md                 이 파일
+├─ LICENSE                   MIT License
+├─ THIRD-PARTY-NOTICES.md    사용한 오픈소스 / AI 모델 라이선스 목록
 ├─ docs/
 │  ├─ 설계서.md              상세 설계 및 진행 현황
 │  └─ 사용설명서.md          사용 설명서 (도움말 F1)
 ├─ NukkiStudio.sln
-├─ models/                   mobile_sam / dfine / migan / lama(프로그램에서 받기)
+├─ models/                   모델 폴더 (설정 파일만 포함, .onnx는 프로그램에서 받기)
 └─ src/                      WinForms 프로그램 (NukkiStudio.csproj)
    ├─ MainForm / ExportOptionsForm / HelpForm / AboutForm / ModelDownloadForm / ImageResizeForm / BusyForm  (각 .cs / .Designer.cs / .resx)
    ├─ Controls/  UI/  Imaging/  Segmentation/  Detection/  Inpainting/  Models/  Export/  Editing/
@@ -88,7 +98,9 @@ Nukki_Studio/
 
 ## 라이선스
 
-이 프로그램은 다음 오픈소스 구성요소와 AI 모델을 각 라이선스 조건에 따라 포함합니다. 저작권 고지와 라이선스 전문은 프로그램의 **도움말 → 프로그램 정보**와 `src/Resources/Licenses/`에 있습니다.
+- 이 프로그램의 소스 코드: [MIT License](LICENSE) — 자유롭게 사용 / 수정 / 배포할 수 있습니다 (저작권 표시 유지).
+- 사용한 오픈소스 구성요소와 AI 모델은 각 라이선스를 따릅니다 → [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)
+  (모두 무료 공개가 가능한 라이선스이며, 전문은 프로그램의 **도움말 → 프로그램 정보**와 `src/Resources/Licenses/`에 있습니다)
 
 | 구성요소 | 라이선스 |
 |----------|----------|
@@ -107,3 +119,4 @@ Nukki_Studio/
 |------|------|
 | [docs/사용설명서.md](docs/사용설명서.md) | 사용 방법과 단축키 전체 |
 | [docs/설계서.md](docs/설계서.md) | 용어, 모델 선정, 처리 흐름, 구조, 진행 현황 |
+| [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) | 제3자 라이선스 목록 |

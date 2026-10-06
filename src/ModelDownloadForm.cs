@@ -43,7 +43,11 @@ public partial class ModelDownloadForm : Form
             new Row(ModelPackages.MiGan, chkMiGan, lblMiGanSize, lblMiGanState),
             new Row(ModelPackages.Lama, chkLama, lblLamaSize, lblLamaState),
         };
-        Load += (_, _) => RefreshRows(initial: true);
+        Load += (_, _) =>
+        {
+            RefreshRows(initial: true);
+            lblProgress.Text = $"저장 위치: {ModelsDirectory}";
+        };
     }
 
     protected override void OnHandleCreated(EventArgs e)
@@ -144,6 +148,13 @@ public partial class ModelDownloadForm : Form
         {
             lblProgress.Text = "다운로드를 취소했습니다. 이미 끝난 모델은 설치되어 있습니다.";
             lblProgress.ForeColor = Theme.TextDim;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            lblProgress.Text = "models 폴더에 저장할 권한이 없습니다.";
+            lblProgress.ForeColor = Theme.Danger;
+            MessageBox.Show(this, $"이 위치에는 모델을 저장할 수 없습니다.\n{ModelsDirectory}\n\nNukkiStudio.exe를 바탕화면이나 다운로드 폴더 같은 일반 폴더로 옮긴 뒤 다시 실행하세요.",
+                Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
         catch (Exception ex)
         {
