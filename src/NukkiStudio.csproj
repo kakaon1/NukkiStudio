@@ -1,0 +1,114 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>NukkiStudio</AssemblyName>
+    <RootNamespace>NukkiStudio.App</RootNamespace>
+    <!-- 탐색기에서 보이는 exe 아이콘 (폼 왼쪽 위 아이콘은 MainForm.resx의 $this.Icon) -->
+    <ApplicationIcon>Resources\app.ico</ApplicationIcon>
+    <Product>Nukki Studio</Product>
+    <AssemblyTitle>Nukki Studio</AssemblyTitle>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <!-- Publish 전용 설정: 반드시 Release 조건부 (전역에 두면 Form Designer 동작 불가) -->
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <PublishDir>bin\Release\Publish\</PublishDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ML.OnnxRuntime.DirectML" Version="1.24.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\app.ico" />
+  </ItemGroup>
+
+  <!-- 오픈소스 라이선스 전문 / 도움말 (exe에 포함, 프로그램 정보·도움말 창에서 표시) -->
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Licenses\*.txt" LogicalName="Licenses.%(Filename).txt" />
+    <EmbeddedResource Include="..\docs\사용설명서.md" LogicalName="Help.manual.md" Link="Resources\사용설명서.md" />
+  </ItemGroup>
+
+  <!-- 폼 디자이너 연결 -->
+  <ItemGroup>
+    <Compile Update="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="ExportOptionsForm.Designer.cs">
+      <DependentUpon>ExportOptionsForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="ExportOptionsForm.resx">
+      <DependentUpon>ExportOptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="HelpForm.Designer.cs">
+      <DependentUpon>HelpForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="HelpForm.resx">
+      <DependentUpon>HelpForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="ModelDownloadForm.Designer.cs">
+      <DependentUpon>ModelDownloadForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="ModelDownloadForm.resx">
+      <DependentUpon>ModelDownloadForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="BusyForm.Designer.cs">
+      <DependentUpon>BusyForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="BusyForm.resx">
+      <DependentUpon>BusyForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="ImageResizeForm.Designer.cs">
+      <DependentUpon>ImageResizeForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="ImageResizeForm.resx">
+      <DependentUpon>ImageResizeForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- ONNX 모델: exe에 넣지 않고 출력 / 게시 폴더의 models\ 로 복사 -->
+  <ItemGroup>
+    <None Include="..\models\**\*.onnx;..\models\**\config.yaml;..\models\**\LICENSE" Link="models\%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </None>
+  </ItemGroup>
+
+  <!-- Release 빌드 시 자동 게시 (Visual Studio 빌드 포함) -->
+  <Target Name="AutoPublishOnRelease" AfterTargets="Build" Condition="'$(Configuration)'=='Release' And '$(_IsPublishing)'!='true' And '$(DesignTimeBuild)'!='true'">
+    <CallTarget Targets="Publish" />
+  </Target>
+
+  <!-- 패키지가 함께 복사하는 링크용 .lib / 디버그 .pdb(DirectML) 제거 — 지침: pdb 미생성 -->
+  <Target Name="RemovePublishExtras" AfterTargets="Publish">
+    <ItemGroup>
+      <_PublishExtras Include="$(PublishDir)*.pdb;$(PublishDir)*.lib" />
+    </ItemGroup>
+    <Delete Files="@(_PublishExtras)" />
+  </Target>
+
+</Project>
