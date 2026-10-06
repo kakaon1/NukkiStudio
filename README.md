@@ -74,9 +74,7 @@ ONNX 파일은 용량 때문에 git에서 제외됩니다. 프로그램을 실�
 
 ```
 Nukki_Studio/
-├─ CLAUDE.md                 에이전트 문서 (작업 지침 + 프로젝트 정보)
 ├─ README.md                 이 파일
-├─ CODEMAP.md                오류 / 결함 이력
 ├─ docs/
 │  ├─ 설계서.md              상세 설계 및 진행 현황
 │  └─ 사용설명서.md          사용 설명서 (도움말 F1)
@@ -107,8 +105,5 @@ Nukki_Studio/
 
 | 문서 | 내용 |
 |------|------|
-| [CLAUDE.md](CLAUDE.md) | 에이전트 작업 지침, 개발 환경, 빌드 방법, UI / 모델 규칙, 변경 이력 |
 | [docs/사용설명서.md](docs/사용설명서.md) | 사용 방법과 단축키 전체 |
 | [docs/설계서.md](docs/설계서.md) | 용어, 모델 선정, 처리 흐름, 구조, 진행 현황 |
-| [CODEMAP.md](CODEMAP.md) | 오류 / 결함 원인과 조치 이력 |
-"# NukkiStudio" 
